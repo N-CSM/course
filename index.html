@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>真善美成功團隊・課程資料庫</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&family=Noto+Sans+TC:wght@300;400;500&display=swap');
+
+:root {
+  --bg:          #f0ece4;
+  --card:        #faf7f2;
+  --border:      #ddd6cb;
+  --text:        #2c2820;
+  --sub:         #6b5f52;
+  --accent:      #6b5a48;
+  --accent-h:    #574839;
+  --accent-lt:   #ede5da;
+  --danger:      #9b6b5a;
+  --danger-h:    #7a5245;
+  --radius:      10px;
+  --shadow:      0 2px 12px rgba(44,40,32,.08);
+  --shadow-lg:   0 8px 32px rgba(44,40,32,.14);
+  --topbar-h:    56px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Noto Sans TC', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.6;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+/* ════════════════════════════
+   SETUP
+════════════════════════════ */
+#setup {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100dvh;
+  padding: 24px;
+}
+.setup-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 36px 32px;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: var(--shadow-lg);
+}
+.setup-logo {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+.setup-hint { font-size: 13px; color: var(--sub); margin-bottom: 24px; line-height: 1.7; }
+.field-label { display: block; font-size: 12px; font-weight: 500; color: var(--sub); margin-bottom: 5px; text-transform: uppercase; letter-spacing: .06em; }
+.field-input {
+  width: 100%; padding: 9px 13px;
+  border: 1.5px solid var(--border); border-radius: var(--radius);
+  background: var(--bg); color: var(--text);
+  font: inherit; font-size: 13px; outline: none;
+  transition: border-color .2s;
+  margin-bottom: 14px;
+}
+.field-input:focus { border-color: var(--accent); }
+.field-textarea { resize: vertical; min-height: 80px; }
+hr.divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+.section-label { font-size: 11px; font-weight: 500; color: var(--sub); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px; }
+.code-block {
+  background: #2c2820; color: #e8ddd0;
+  border-radius: var(--radius); padding: 14px;
+  font: 11.5px/1.7 'Courier New', monospace;
+  max-height: 180px; overflow-y: auto; white-space: pre;
+  margin-bottom: 10px;
+}
+
+/* ════════════════════════════
+   BUTTONS
+════════════════════════════ */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+  padding: 9px 16px; border: none; border-radius: var(--radius);
+  cursor: pointer; font: 500 13px/1 'Noto Sans TC', sans-serif;
+  transition: background .15s, opacity .15s;
+  text-decoration: none; white-space: nowrap;
+}
+.btn:active { opacity: .82; }
+.btn-primary  { background: var(--accent);  color: #fff; width: 100%; padding: 12px; font-size: 14px; }
+.btn-primary:hover  { background: var(--accent-h); }
+.btn-outline  { background: transparent; color: var(--accent); border: 1.5px solid var(--border); }
+.btn-outline:hover  { background: var(--accent-lt); }
+.btn-ghost    { background: transparent; color: var(--sub); }
+.btn-ghost:hover    { background: var(--accent-lt); color: var(--text); }
+.btn-danger   { background: var(--danger); color: #fff; }
+.btn-danger:hover   { background: var(--danger-h); }
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+
+/* ════════════════════════════
+   APP SHELL
+════════════════════════════ */
+#app { display: none; height: 100dvh; flex-direction: column; }
+#app.on { display: flex; }
+
+.topbar {
+  height: var(--topbar-h); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px;
+  background: var(--card); border-bottom: 1px solid var(--border);
+  box-shadow: 0 1px 4px rgba(44,40,32,.05);
+  z-index: 10;
+}
+.topbar-brand { font-family: 'Noto Serif TC', serif; font-size: 16px; font-weight: 600; color: var(--accent); }
+.topbar-brand em { font-style: normal; font-family: 'Noto Sans TC', sans-serif; font-size: 12px; font-weight: 400; color: var(--sub); margin-left: 8px; }
+.topbar-right { display: flex; gap: 8px; }
+
+.loading-strip { height: 3px; background: var(--accent); flex-shrink: 0; display: none; animation: strip 1.2s ease-in-out infinite; }
+.loading-strip.on { display: block; }
+@keyframes strip { 0%{width:0;margin-left:0} 50%{width:55%;margin-left:22%} 100%{width:0;margin-left:100%} }
+
+/* ════════════════════════════
+   BODY SPLIT
+════════════════════════════ */
+.body-wrap { flex: 1; display: flex; overflow: hidden; }
+
+/* ── LEFT ── */
+.left-panel {
+  width: 370px; min-width: 260px; flex-shrink: 0;
+  display: flex; flex-direction: column;
+  border-right: 1px solid var(--border);
+  overflow: hidden;
+}
+.controls {
+  flex-shrink: 0; padding: 12px 14px 10px;
+  background: var(--card); border-bottom: 1px solid var(--border);
+}
+.search-wrap { position: relative; margin-bottom: 10px; }
+.search-wrap svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--sub); pointer-events: none; }
+#search {
+  width: 100%; padding: 8px 12px 8px 32px;
+  border: 1.5px solid var(--border); border-radius: 20px;
+  background: var(--bg); color: var(--text);
+  font: inherit; font-size: 13px; outline: none; transition: border-color .2s;
+}
+#search:focus { border-color: var(--accent); }
+
+.tabs { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+.tab {
+  padding: 3px 11px; border-radius: 20px;
+  border: 1.5px solid var(--border); background: transparent;
+  color: var(--sub); font: inherit; font-size: 12px; cursor: pointer;
+  transition: all .14s; white-space: nowrap;
+}
+.tab.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+.tab:hover:not(.on) { background: var(--accent-lt); }
+
+.tag-filters { display: flex; flex-wrap: wrap; gap: 4px; }
+.tf-btn {
+  padding: 2px 9px; border-radius: 20px;
+  border: 1.5px solid var(--border); background: transparent;
+  color: var(--sub); font: inherit; font-size: 11px; cursor: pointer;
+  transition: all .14s;
+}
+.tf-btn.on { background: var(--accent-lt); border-color: var(--accent); color: var(--accent); font-weight: 500; }
+
+.list-meta { padding: 6px 14px; font-size: 11px; color: var(--sub); flex-shrink: 0; }
+
+.list-scroll { flex: 1; overflow-y: auto; padding: 8px 10px; }
+.list-scroll::-webkit-scrollbar { width: 4px; }
+.list-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+.card {
+  background: var(--card); border: 1.5px solid var(--border);
+  border-radius: var(--radius); padding: 13px 13px 11px;
+  margin-bottom: 7px; cursor: pointer;
+  transition: border-color .14s, box-shadow .14s;
+  user-select: none;
+}
+.card:hover { border-color: var(--accent); box-shadow: var(--shadow); }
+.card.on { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(107,90,72,.13); background: #fff; }
+.card-row1 { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 3px; }
+.card-topic { flex: 1; font-size: 14px; font-weight: 500; line-height: 1.4; }
+.card-type { font-size: 10px; padding: 2px 8px; border-radius: 20px; background: var(--accent-lt); color: var(--accent); white-space: nowrap; flex-shrink: 0; font-weight: 500; }
+.card-meta { font-size: 12px; color: var(--sub); margin-bottom: 5px; }
+.card-speaker { color: var(--accent); font-weight: 600; }
+.card-tags { display: flex; flex-wrap: wrap; gap: 3px; }
+
+/* ── RIGHT ── */
+.right-panel { flex: 1; overflow-y: auto; }
+.right-panel::-webkit-scrollbar { width: 4px; }
+.right-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+.detail-empty {
+  height: 100%; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  color: var(--sub); gap: 10px; padding: 40px; text-align: center;
+}
+.detail-empty-icon { font-size: 40px; opacity: .35; }
+
+#detail-view { padding: 28px 32px; display: none; }
+
+.dv-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 16px; padding-bottom: 20px; margin-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+.dv-title-group { flex: 1; min-width: 0; }
+.dv-type { display: inline-block; font-size: 11px; padding: 2px 10px; border-radius: 20px; background: var(--accent-lt); color: var(--accent); font-weight: 500; margin-bottom: 8px; }
+.dv-title { font-family: 'Noto Serif TC', serif; font-size: 22px; font-weight: 600; color: #1a1410; line-height: 1.4; margin-bottom: 10px; }
+.dv-speaker { display: inline-flex; align-items: center; gap: 4px; font-size: 14px; font-weight: 700; color: var(--accent); background: var(--accent-lt); padding: 3px 12px; border-radius: 20px; margin-right: 8px; }
+.dv-date { font-size: 13px; color: var(--sub); }
+.dv-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+.dv-section { margin-bottom: 20px; }
+.dv-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .08em; color: var(--sub); margin-bottom: 6px; }
+.dv-value { font-size: 14px; line-height: 1.8; white-space: pre-line; }
+.dv-link { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; font-size: 14px; }
+.dv-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.dv-updated { margin-top: 24px; font-size: 11px; color: var(--sub); }
+
+/* ── TAG PILL ── */
+.pill {
+  font-size: 11px; padding: 3px 10px; border-radius: 20px;
+  font-weight: 500; color: #fff; border: none; font-family: inherit;
+  cursor: pointer; transition: opacity .14s;
+}
+.pill:hover { opacity: .8; }
+
+/* ════════════════════════════
+   MODAL
+════════════════════════════ */
+.overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(44,40,32,.45); backdrop-filter: blur(2px);
+  z-index: 200; align-items: center; justify-content: center; padding: 20px;
+}
+.overlay.on { display: flex; }
+.modal {
+  background: var(--card); border-radius: 14px;
+  width: 100%; max-width: 560px; max-height: 90dvh;
+  overflow-y: auto; box-shadow: var(--shadow-lg);
+  animation: pop .2s ease;
+}
+@keyframes pop { from{transform:translateY(14px) scale(.98);opacity:0} to{transform:none;opacity:1} }
+.modal-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 22px 14px; border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; background: var(--card); z-index: 1;
+}
+.modal-title { font-family: 'Noto Serif TC', serif; font-size: 17px; font-weight: 600; }
+.modal-body { padding: 18px 22px; }
+.modal-foot {
+  display: flex; justify-content: flex-end; gap: 8px;
+  padding: 14px 22px; border-top: 1px solid var(--border);
+  position: sticky; bottom: 0; background: var(--card);
+}
+.form-group { margin-bottom: 14px; }
+
+/* Tags field */
+.tags-field {
+  border: 1.5px solid var(--border); border-radius: var(--radius);
+  padding: 5px 8px; background: var(--bg);
+  display: flex; flex-wrap: wrap; gap: 4px; min-height: 40px; cursor: text;
+  transition: border-color .2s;
+}
+.tags-field:focus-within { border-color: var(--accent); }
+.tag-chip {
+  display: inline-flex; align-items: center; gap: 3px;
+  padding: 2px 8px; border-radius: 20px;
+  font-size: 12px; color: #fff; font-weight: 500;
+}
+.chip-x {
+  background: none; border: none; color: rgba(255,255,255,.75);
+  cursor: pointer; font-size: 14px; padding: 0; line-height: 1;
+}
+.chip-x:hover { color: #fff; }
+.tag-text {
+  border: none; outline: none; background: transparent;
+  font: 12px/1 'Noto Sans TC', sans-serif; color: var(--text);
+  min-width: 90px; flex: 1; padding: 3px 0;
+}
+.tag-suggest { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.ts-btn {
+  font-size: 11px; padding: 2px 9px; border-radius: 20px;
+  border: 1.5px solid var(--border); background: transparent;
+  color: var(--sub); font-family: inherit; cursor: pointer; transition: all .12s;
+}
+.ts-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-lt); }
+
+/* ════════════════════════════
+   TOAST
+════════════════════════════ */
+#toast {
+  position: fixed; bottom: 24px; left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: #2c2820; color: #faf7f2;
+  padding: 9px 20px; border-radius: 24px; font-size: 13px;
+  z-index: 999; pointer-events: none;
+  opacity: 0; transition: opacity .22s, transform .22s;
+  white-space: nowrap;
+}
+#toast.on { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ════════════════════════════
+   EMPTY LIST
+════════════════════════════ */
+.empty { text-align: center; padding: 36px 16px; color: var(--sub); font-size: 13px; }
+.empty-icon { font-size: 32px; margin-bottom: 8px; opacity: .4; }
+
+/* ════════════════════════════
+   MOBILE  < 768
+════════════════════════════ */
+@media (max-width: 767px) {
+  body { overflow: auto; height: auto; }
+
+  .topbar-brand em { display: none; }
+
+  #app {
+    height: auto;
+    min-height: 100dvh;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .body-wrap {
+    flex-direction: column;
+    overflow: visible;
+    flex: none;
+  }
+
+  .left-panel {
+    width: 100%;
+    border-right: none;
+    overflow: visible;
+    height: auto;
+    min-height: 0;
+  }
+
+  .list-scroll {
+    overflow: visible;
+    height: auto;
+    max-height: none;
+    padding-bottom: 40px;
+  }
+
+  /* Detail panel slides in over full screen */
+  .right-panel {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 200;
+    background: var(--bg);
+    transform: translateX(100%);
+    transition: transform .28s cubic-bezier(.4,0,.2,1);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .right-panel.open { transform: translateX(0); }
+
+  .mobile-back {
+    display: flex; align-items: center; gap: 6px;
+    padding: 14px 18px; font-size: 14px; font-weight: 500;
+    color: var(--accent); cursor: pointer;
+    background: var(--card); border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 1;
+  }
+
+  .detail-empty { padding-top: 80px; }
+  #detail-view { padding: 18px 18px 40px; }
+  .dv-header { flex-direction: column; }
+  .dv-actions { align-self: flex-end; }
+}
+@media (min-width: 768px) {
+  .mobile-back { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ SETUP ══ -->
+<div id="setup">
+  <div class="setup-card">
+    <div class="setup-logo">真善美成功團隊</div>
+    <div class="setup-hint">課程資料庫初次設定<br>請輸入 Google Apps Script 部署網址以連接試算表。</div>
+
+    <label class="field-label" for="setup-url">Apps Script 部署 URL</label>
+    <input class="field-input" id="setup-url" type="url" placeholder="https://script.google.com/macros/s/...">
+
+    <button class="btn btn-primary" id="setup-save">確認儲存並進入</button>
+
+    <hr class="divider">
+    <div class="section-label">📋 Apps Script 程式碼（複製後貼到 GAS 部署）</div>
+    <div class="code-block" id="gas-code-display"></div>
+    <button class="btn btn-outline btn-sm" id="copy-gas">複製程式碼</button>
+  </div>
+</div>
+
+<!-- ══ APP ══ -->
+<div id="app">
+  <div class="loading-strip" id="strip"></div>
+
+  <div class="topbar">
+    <div class="topbar-brand">真善美成功團隊 <em>課程資料庫</em></div>
+    <div class="topbar-right">
+      <button class="btn btn-ghost btn-sm" id="btn-add">＋ 新增課程</button>
+      <button class="btn btn-ghost btn-sm" id="btn-settings" title="重設">⚙</button>
+    </div>
+  </div>
+
+  <div class="body-wrap">
+    <!-- LEFT -->
+    <div class="left-panel">
+      <div class="controls">
+        <div class="search-wrap">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input id="search" type="search" placeholder="搜尋主題、主講者、內容…">
+        </div>
+        <div class="tabs" id="tabs"></div>
+        <div class="tag-filters" id="tag-filters"></div>
+      </div>
+      <div class="list-meta" id="list-meta"></div>
+      <div class="list-scroll" id="list"></div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="right-panel" id="right">
+      <div class="mobile-back" id="mobile-back">← 返回列表</div>
+      <div class="detail-empty" id="detail-empty">
+        <div class="detail-empty-icon">📖</div>
+        <div>點選左側課程查看詳情</div>
+      </div>
+      <div id="detail-view"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL ══ -->
+<div class="overlay" id="modal-overlay">
+  <div class="modal" id="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="modal-title">新增課程</div>
+      <button class="btn btn-ghost btn-sm" id="modal-close">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="field-label" for="f-type">課程類型</label>
+        <input class="field-input" id="f-type" list="type-list" placeholder="例：產品課、銷售課">
+        <datalist id="type-list"></datalist>
+      </div>
+      <div class="form-group">
+        <label class="field-label" for="f-date">課程日期</label>
+        <input class="field-input" id="f-date" type="date">
+      </div>
+      <div class="form-group">
+        <label class="field-label" for="f-topic">主題 *</label>
+        <input class="field-input" id="f-topic" placeholder="課程主題">
+      </div>
+      <div class="form-group">
+        <label class="field-label" for="f-speaker">主講者</label>
+        <input class="field-input" id="f-speaker" placeholder="主講者姓名">
+      </div>
+      <div class="form-group">
+        <label class="field-label" for="f-url">連結</label>
+        <input class="field-input" id="f-url" type="url" placeholder="https://...">
+      </div>
+      <div class="form-group">
+        <label class="field-label" for="f-summary">內容簡介</label>
+        <textarea class="field-input field-textarea" id="f-summary" rows="4" placeholder="課程重點摘要…"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="field-label" for="f-note">備註</label>
+        <textarea class="field-input field-textarea" id="f-note" rows="2" placeholder="補充備註…"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="field-label">關鍵字標籤</label>
+        <div class="tags-field" id="tags-field">
+          <input class="tag-text" id="tag-input" placeholder="輸入後按 Enter 新增">
+        </div>
+        <div class="tag-suggest" id="tag-suggest"></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" id="modal-cancel">取消</button>
+      <button class="btn btn-primary" id="modal-save" style="width:auto;padding:10px 24px">儲存</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ════════════════════════════════════════════════
+   CONSTANTS & STATE
+════════════════════════════════════════════════ */
+const STORAGE_KEY = 'snova_course_v1';
+
+const GAS_CODE = `const SHEET_ID = '1h61zIndDgcDqh4tpVxCKSWoBwmjzw6X20qLdbVhHfQ0';
+const SHEET_NAME = '整理版';
+const COLS = ['id','type','date','topic','speaker','url','summary','note','tags','updatedAt'];
+
+function doPost(e) {
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    const body = JSON.parse(e.postData.contents);
+    const action = body.action;
+    const ss = SpreadsheetApp.openById(SHEET_ID);
+    let sh = ss.getSheetByName(SHEET_NAME);
+    if (!sh) {
+      sh = ss.insertSheet(SHEET_NAME);
+      sh.appendRow(COLS);
+    }
+    if (action === 'getAll') {
+      const data = sh.getDataRange().getValues();
+      if (data.length <= 1) return ok({ records: [] });
+      const hdrs = data[0];
+      const records = data.slice(1).map((row, ri) => {
+        const obj = {};
+        hdrs.forEach((h, i) => {
+          let v = row[i];
+          // Convert Date objects to YYYY-MM-DD string
+          if (v instanceof Date) {
+            if (h === 'date') {
+              const y = v.getFullYear();
+              const m = String(v.getMonth()+1).padStart(2,'0');
+              const d = String(v.getDate()).padStart(2,'0');
+              v = v.getFullYear() > 1899 ? y+'-'+m+'-'+d : '';
+            } else {
+              v = v.toISOString();
+            }
+          }
+          obj[h] = String(v ?? '');
+        });
+        // Auto-assign id if missing
+        if (!obj.id || obj.id === 'undefined') {
+          obj.id = 'c_' + (ri+1);
+          sh.getRange(ri+2, 1).setValue(obj.id);
+        }
+        return obj;
+      });
+      return ok({ records });
+    }
+    if (action === 'add') {
+      const d = body.data;
+      const id = 'c_' + Date.now();
+      const now = new Date().toISOString();
+      sh.appendRow(COLS.map(c => c==='id' ? id : c==='updatedAt' ? now : (d[c]||'')));
+      return ok({ success: true, id });
+    }
+    if (action === 'update') {
+      const id = body.id, d = body.data;
+      const rows = sh.getDataRange().getValues();
+      for (let i = 1; i < rows.length; i++) {
+        if (String(rows[i][0]) === String(id)) {
+          const now = new Date().toISOString();
+          COLS.forEach((c, ci) => {
+            if (c === 'id') return;
+            if (c === 'updatedAt') { sh.getRange(i+1,ci+1).setValue(now); return; }
+            if (d[c] !== undefined) sh.getRange(i+1,ci+1).setValue(d[c]);
+          });
+          return ok({ success: true });
+        }
+      }
+      return err('Not found');
+    }
+    if (action === 'delete') {
+      const id = body.id;
+      const rows = sh.getDataRange().getValues();
+      for (let i = 1; i < rows.length; i++) {
+        if (String(rows[i][0]) === String(id)) { sh.deleteRow(i+1); return ok({ success: true }); }
+      }
+      return err('Not found');
+    }
+    return err('Unknown action');
+  } catch(ex) { return err(ex.toString()); }
+  finally { lock.releaseLock(); }
+}
+function ok(o)  { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
+function err(m) { return ContentService.createTextOutput(JSON.stringify({error:m})).setMimeType(ContentService.MimeType.JSON); }`;
+
+/* ---- mutable state ---- */
+let apiUrl      = '';
+let courses     = [];           // all records from API
+let activeType  = '全部';
+let activeTags  = new Set();    // tag filter
+let currentId   = null;         // selected course id
+let editingId   = null;         // null = add, string = edit
+let formTags    = [];           // tags in modal
+
+const TAG_COLORS = [
+  '#a08060','#6b8a6b','#6a85a8','#9a6a7a','#7a7855',
+  '#5a8880','#826888','#906850','#7d9a80','#607870',
+];
+const colorMap = {};
+function tagColor(t) {
+  if (!colorMap[t]) colorMap[t] = TAG_COLORS[Object.keys(colorMap).length % TAG_COLORS.length];
+  return colorMap[t];
+}
+
+/* ════════════════════════════════════════════════
+   UTILITIES
+════════════════════════════════════════════════ */
+function esc(s) {
+  return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function fmtDate(d) { return d ? d.replace(/-/g,'/') : ''; }
+function $(id) { return document.getElementById(id); }
+
+let toastTimer;
+function toast(msg, ms = 2800) {
+  const el = $('toast');
+  el.textContent = msg;
+  el.classList.add('on');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('on'), ms);
+}
+
+function setLoading(on) { $('strip').classList.toggle('on', on); }
+
+/* ════════════════════════════════════════════════
+   SETUP SCREEN
+════════════════════════════════════════════════ */
+$('gas-code-display').textContent = GAS_CODE;
+
+$('copy-gas').addEventListener('click', () => {
+  navigator.clipboard.writeText(GAS_CODE).then(() => toast('✓ 已複製 Apps Script 程式碼'));
+});
+
+$('setup-save').addEventListener('click', () => {
+  const url = $('setup-url').value.trim();
+  if (!url.startsWith('https://')) { toast('⚠ 請輸入正確的 HTTPS 網址'); return; }
+  apiUrl = url;
+  localStorage.setItem(STORAGE_KEY, url);
+  startApp();
+});
+
+function resetSetup() {
+  if (!confirm('確定要重新設定？')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  location.reload();
+}
+
+/* ════════════════════════════════════════════════
+   API
+════════════════════════════════════════════════ */
+async function api(action, payload = {}) {
+  setLoading(true);
+  try {
+    const res  = await fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action, ...payload }),
+    });
+    const json = await res.json();
+    if (json.error) throw new Error(json.error);
+    return json;
+  } finally {
+    setLoading(false);
+  }
+}
+
+/* ════════════════════════════════════════════════
+   BOOT
+════════════════════════════════════════════════ */
+function startApp() {
+  $('setup').style.display = 'none';
+  $('app').classList.add('on');
+  loadCourses();
+}
+
+async function loadCourses() {
+  try {
+    const data = await api('getAll');
+    courses = (data.records || []).sort((a,b) => (b.date||'').localeCompare(a.date||''));
+    // pre-assign colors in sorted tag order so colors stay stable
+    allTags().forEach(t => tagColor(t));
+    renderTabs();
+    renderTagFilters();
+    renderList();
+  } catch(e) {
+    toast('⚠ 無法載入：' + e.message);
+  }
+}
+
+/* ════════════════════════════════════════════════
+   DERIVED DATA
+════════════════════════════════════════════════ */
+function allTags() {
+  const s = new Set();
+  courses.forEach(c => (c.tags||'').split(',').map(t=>t.trim()).filter(Boolean).forEach(t=>s.add(t)));
+  return [...s].sort();
+}
+function allTypes() {
+  const s = new Set();
+  courses.forEach(c => { if (c.type) s.add(c.type.trim()); });
+  return [...s].sort();
+}
+function filtered() {
+  const q = $('search').value.toLowerCase();
+  return courses.filter(c => {
+    if (activeType !== '全部' && c.type !== activeType) return false;
+    if (activeTags.size) {
+      const ct = (c.tags||'').split(',').map(t=>t.trim()).filter(Boolean);
+      if (![...activeTags].every(t => ct.includes(t))) return false;
+    }
+    if (q) {
+      const hay = [c.topic, c.speaker, c.summary, c.note].join(' ').toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+}
+
+/* ════════════════════════════════════════════════
+   RENDER — TABS
+════════════════════════════════════════════════ */
+function renderTabs() {
+  const el = $('tabs');
+  el.innerHTML = '';
+  ['全部', ...allTypes()].forEach(t => {
+    const btn = document.createElement('button');
+    btn.className = 'tab' + (t === activeType ? ' on' : '');
+    btn.textContent = t;
+    btn.addEventListener('click', () => { activeType = t; renderTabs(); renderList(); });
+    el.appendChild(btn);
+  });
+}
+
+/* ════════════════════════════════════════════════
+   RENDER — TAG FILTERS
+════════════════════════════════════════════════ */
+function renderTagFilters() {
+  const el = $('tag-filters');
+  el.innerHTML = '';
+  allTags().forEach(t => {
+    const btn = document.createElement('button');
+    btn.className = 'tf-btn' + (activeTags.has(t) ? ' on' : '');
+    btn.textContent = t;
+    btn.addEventListener('click', () => {
+      activeTags.has(t) ? activeTags.delete(t) : activeTags.add(t);
+      renderTagFilters();
+      renderList();
+    });
+    el.appendChild(btn);
+  });
+}
+
+/* ════════════════════════════════════════════════
+   RENDER — LIST
+   KEY DESIGN: builds DOM nodes (not innerHTML),
+   attaches click listeners directly on each card.
+   No re-binding issues possible.
+════════════════════════════════════════════════ */
+function renderList() {
+  const list = filtered();
+  $('list-meta').textContent = `共 ${list.length} 筆課程`;
+  const el = $('list');
+  el.innerHTML = '';
+
+  if (!list.length) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">🔍</div>無符合的課程</div>';
+    return;
+  }
+
+  list.forEach(c => {
+    const div = document.createElement('div');
+    div.className = 'card' + (c.id === currentId ? ' on' : '');
+
+    const tags = (c.tags||'').split(',').map(t=>t.trim()).filter(Boolean);
+    const tagHtml = tags.map(t =>
+      `<span class="pill" style="background:${tagColor(t)}">${esc(t)}</span>`
+    ).join('');
+
+    div.innerHTML = `
+      <div class="card-row1">
+        <div class="card-topic">${esc(c.topic || '（無主題）')}</div>
+        ${c.type ? `<span class="card-type">${esc(c.type)}</span>` : ''}
+      </div>
+      <div class="card-meta">
+        ${c.date ? fmtDate(c.date) : ''}
+        ${c.speaker ? `&nbsp;・&nbsp;<span class="card-speaker">${esc(c.speaker)}</span>` : ''}
+      </div>
+      ${tags.length ? `<div class="card-tags">${tagHtml}</div>` : ''}
+    `;
+
+    /* ★ click bound directly on the DOM node — survives anything ★ */
+    div.addEventListener('click', () => selectCourse(c.id));
+
+    el.appendChild(div);
+  });
+}
+
+/* ════════════════════════════════════════════════
+   SELECT & DETAIL
+════════════════════════════════════════════════ */
+function selectCourse(id) {
+  currentId = id;
+  const c = courses.find(x => x.id === id);
+  if (!c) return;
+
+  /* update active state on existing card nodes — no rebuild, no event loss */
+  const cards = document.querySelectorAll('#list .card');
+  const listNow = filtered();
+  cards.forEach((el, i) => {
+    const match = currentId && listNow[i] && listNow[i].id === currentId;
+    el.classList.toggle('on', match);
+  });
+
+  renderDetail(c);
+  $('right').classList.add('open');
+}
+
+function renderDetail(c) {
+  $('detail-empty').style.display = 'none';
+  const dv = $('detail-view');
+  dv.style.display = 'block';
+
+  const tags = (c.tags||'').split(',').map(t=>t.trim()).filter(Boolean);
+
+  dv.innerHTML = `
+    <div class="dv-header">
+      <div class="dv-title-group">
+        ${c.type ? `<span class="dv-type">${esc(c.type)}</span>` : ''}
+        <div class="dv-title">${esc(c.topic || '（無主題）')}</div>
+        <div>
+          ${c.speaker ? `<span class="dv-speaker">🎤 ${esc(c.speaker)}</span>` : ''}
+          ${c.date ? `<span class="dv-date">${fmtDate(c.date)}</span>` : ''}
+        </div>
+      </div>
+      <div class="dv-actions">
+        <button class="btn btn-outline btn-sm" id="dv-edit">編輯</button>
+        <button class="btn btn-danger btn-sm" id="dv-del">刪除</button>
+      </div>
+    </div>
+
+    ${c.url ? `<div class="dv-section">
+      <div class="dv-label">連結</div>
+      <a class="dv-link" href="${esc(c.url)}" target="_blank" rel="noopener">開啟連結 ↗</a>
+    </div>` : ''}
+
+    ${c.summary ? `<div class="dv-section">
+      <div class="dv-label">內容簡介</div>
+      <div class="dv-value">${esc(c.summary)}</div>
+    </div>` : ''}
+
+    ${c.note ? `<div class="dv-section">
+      <div class="dv-label">備註</div>
+      <div class="dv-value">${esc(c.note)}</div>
+    </div>` : ''}
+
+    ${tags.length ? `<div class="dv-section">
+      <div class="dv-label">關鍵字標籤</div>
+      <div class="dv-tags" id="dv-tags"></div>
+    </div>` : ''}
+
+    ${c.updatedAt ? `<div class="dv-updated">更新時間：${new Date(c.updatedAt).toLocaleString('zh-TW')}</div>` : ''}
+  `;
+
+  /* bind edit / delete using querySelector on dv container — avoids stale getElementById */
+  dv.querySelector('.btn-outline').addEventListener('click', () => openModal(c.id));
+  dv.querySelector('.btn-danger').addEventListener('click', () => deleteCourse(c.id));
+
+  /* tag pills — click to filter */
+  if (tags.length) {
+    const tagsEl = $('dv-tags');
+    tags.forEach(t => {
+      const btn = document.createElement('button');
+      btn.className = 'pill';
+      btn.style.background = tagColor(t);
+      btn.textContent = t;
+      btn.addEventListener('click', () => {
+        activeTags.add(t);
+        renderTagFilters();
+        renderList();
+        /* on mobile, close detail to show filtered list */
+        if (window.innerWidth < 768) closeDetail();
+      });
+      tagsEl.appendChild(btn);
+    });
+  }
+}
+
+function closeDetail() {
+  $('right').classList.remove('open');
+  currentId = null;
+  $('detail-empty').style.display = 'flex';
+  $('detail-view').style.display = 'none';
+  renderList();
+}
+
+/* ════════════════════════════════════════════════
+   DELETE
+════════════════════════════════════════════════ */
+async function deleteCourse(id) {
+  if (!confirm('確定要刪除這筆課程嗎？')) return;
+  try {
+    await api('delete', { id });
+    toast('✓ 已刪除');
+    currentId = null;
+    $('detail-empty').style.display = 'flex';
+    $('detail-view').style.display = 'none';
+    $('right').classList.remove('open');
+    await loadCourses();
+  } catch(e) {
+    toast('⚠ 刪除失敗：' + e.message);
+  }
+}
+
+/* ════════════════════════════════════════════════
+   MODAL — OPEN
+════════════════════════════════════════════════ */
+function openModal(id = null) {
+  editingId = id;
+  $('modal-title').textContent = id ? '編輯課程' : '新增課程';
+
+  /* populate type datalist */
+  $('type-list').innerHTML = allTypes().map(t => `<option value="${esc(t)}">`).join('');
+
+  if (id) {
+    const c = courses.find(x => x.id === id);
+    $('f-type').value    = c.type    || '';
+    $('f-date').value    = c.date    || '';
+    $('f-topic').value   = c.topic   || '';
+    $('f-speaker').value = c.speaker || '';
+    $('f-url').value     = c.url     || '';
+    $('f-summary').value = c.summary || '';
+    $('f-note').value    = c.note    || '';
+    formTags = (c.tags||'').split(',').map(t=>t.trim()).filter(Boolean);
+  } else {
+    ['f-type','f-date','f-topic','f-speaker','f-url','f-summary','f-note']
+      .forEach(fid => { $(fid).value = ''; });
+    formTags = [];
+  }
+
+  renderFormTags();
+  renderTagSuggest();
+  $('modal-overlay').classList.add('on');
+  $('f-topic').focus();
+}
+
+function closeModal() { $('modal-overlay').classList.remove('on'); }
+
+/* ════════════════════════════════════════════════
+   MODAL — TAGS FIELD
+════════════════════════════════════════════════ */
+function renderFormTags() {
+  const field = $('tags-field');
+  const input = $('tag-input');
+  /* remove old chips */
+  field.querySelectorAll('.tag-chip').forEach(el => el.remove());
+  /* prepend chips before input */
+  formTags.forEach((t, i) => {
+    const chip = document.createElement('span');
+    chip.className = 'tag-chip';
+    chip.style.background = tagColor(t);
+    chip.innerHTML = `${esc(t)}<button class="chip-x" type="button">×</button>`;
+    chip.querySelector('.chip-x').addEventListener('click', () => {
+      formTags.splice(i, 1);
+      renderFormTags();
+      renderTagSuggest();
+    });
+    field.insertBefore(chip, input);
+  });
+}
+
+function renderTagSuggest() {
+  const el = $('tag-suggest');
+  el.innerHTML = '';
+  allTags().filter(t => !formTags.includes(t)).forEach(t => {
+    const btn = document.createElement('button');
+    btn.className = 'ts-btn';
+    btn.type = 'button';
+    btn.textContent = t;
+    btn.addEventListener('click', () => {
+      if (!formTags.includes(t)) { formTags.push(t); renderFormTags(); renderTagSuggest(); }
+    });
+    el.appendChild(btn);
+  });
+}
+
+$('tag-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter' || e.key === ',') {
+    e.preventDefault();
+    const v = $('tag-input').value.trim().replace(/,$/,'');
+    if (v && !formTags.includes(v)) { formTags.push(v); renderFormTags(); renderTagSuggest(); }
+    $('tag-input').value = '';
+  } else if (e.key === 'Backspace' && !$('tag-input').value) {
+    formTags.pop();
+    renderFormTags();
+    renderTagSuggest();
+  }
+});
+
+$('tags-field').addEventListener('click', () => $('tag-input').focus());
+
+/* ════════════════════════════════════════════════
+   MODAL — SAVE
+════════════════════════════════════════════════ */
+$('modal-save').addEventListener('click', async () => {
+  const topic = $('f-topic').value.trim();
+  if (!topic) { toast('⚠ 請填寫主題'); return; }
+
+  /* capture any pending tag */
+  const pending = $('tag-input').value.trim();
+  if (pending && !formTags.includes(pending)) formTags.push(pending);
+  $('tag-input').value = '';
+
+  const data = {
+    type:    $('f-type').value.trim(),
+    date:    $('f-date').value,
+    topic,
+    speaker: $('f-speaker').value.trim(),
+    url:     $('f-url').value.trim(),
+    summary: $('f-summary').value.trim(),
+    note:    $('f-note').value.trim(),
+    tags:    formTags.join(','),
+  };
+
+  const btn = $('modal-save');
+  btn.disabled = true; btn.textContent = '儲存中…';
+
+  try {
+    if (editingId) {
+      await api('update', { id: editingId, data });
+      toast('✓ 課程已更新');
+    } else {
+      await api('add', { data });
+      toast('✓ 課程已新增');
+    }
+    closeModal();
+    const prevId = editingId;
+    await loadCourses();
+    if (prevId) {
+      currentId = prevId;
+      const c = courses.find(x => x.id === prevId);
+      if (c) { renderList(); renderDetail(c); }
+    }
+  } catch(e) {
+    toast('⚠ 儲存失敗：' + e.message);
+  } finally {
+    btn.disabled = false; btn.textContent = '儲存';
+  }
+});
+
+/* ════════════════════════════════════════════════
+   WIRE UP STATIC BUTTONS
+════════════════════════════════════════════════ */
+$('btn-add').addEventListener('click', () => openModal());
+$('btn-settings').addEventListener('click', resetSetup);
+$('modal-close').addEventListener('click', closeModal);
+$('modal-cancel').addEventListener('click', closeModal);
+$('mobile-back').addEventListener('click', closeDetail);
+$('search').addEventListener('input', renderList);
+
+/* close modal on overlay click */
+$('modal-overlay').addEventListener('click', e => {
+  if (e.target === $('modal-overlay')) closeModal();
+});
+
+/* ════════════════════════════════════════════════
+   INIT
+════════════════════════════════════════════════ */
+(function init() {
+  // ★ 直接寫入 Apps Script URL，打開即用
+  const HARDCODED_URL = 'https://script.google.com/macros/s/AKfycbxOc5XXuA8_VqbW0tNWZv3bMHrvo8wzyjqgZRtOEoXEGiJIXgPwLsMrvR1drfpHN6LA/exec';
+
+  if (HARDCODED_URL && HARDCODED_URL !== 'YOUR_APPS_SCRIPT_URL_HERE') {
+    apiUrl = HARDCODED_URL;
+    localStorage.setItem(STORAGE_KEY, HARDCODED_URL);
+    startApp();
+  } else {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) { apiUrl = saved; startApp(); }
+    else { $('setup').style.display = 'flex'; }
+  }
+})();
+</script>
+</body>
+</html>
