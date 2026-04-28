@@ -794,11 +794,6 @@ function afterLogin(user) {
     $('btn-members').style.display = 'inline-flex';
   }
 
-  document.getElementById('course-list').addEventListener('click', e => {
-    const card = e.target.closest('.course-card');
-    if (card) selectCourse(card.dataset.id);
-  });
-
   loadCourses();
 }
 
