@@ -192,9 +192,9 @@ hr.divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; 
 .card-row1 { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 3px; }
 .card-topic { flex: 1; font-size: 14px; font-weight: 500; line-height: 1.4; }
 .card-type { font-size: 10px; padding: 2px 8px; border-radius: 20px; background: var(--accent-lt); color: var(--accent); white-space: nowrap; flex-shrink: 0; font-weight: 500; }
-.card-meta { font-size: 12px; color: var(--sub); margin-bottom: 5px; }
+.card-meta { font-size: 12px; color: var(--sub); margin-bottom: 8px; }
 .card-speaker { color: var(--accent); font-weight: 600; }
-.card-tags { display: flex; flex-wrap: wrap; gap: 3px; }
+.card-tags { display: flex; flex-wrap: wrap; gap: 3px; padding-top: 7px; border-top: 1px dashed var(--border); margin-top: 6px; }
 
 /* ── RIGHT ── */
 .right-panel { flex: 1; overflow-y: auto; }
@@ -325,6 +325,11 @@ hr.divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; 
   body { overflow: auto; height: auto; }
 
   .topbar-brand em { display: none; }
+  .topbar { padding: 0 12px; gap: 8px; }
+  .topbar-brand { font-size: 13px; flex-shrink: 0; }
+  .topbar-right { gap: 4px; flex-shrink: 0; }
+  .topbar-right .btn-sm { padding: 4px 8px; font-size: 11px; }
+  .user-badge { padding: 3px 7px; font-size: 11px; }
 
   #app.on {
     height: auto;
@@ -412,6 +417,17 @@ hr.divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; 
 .user-badge { display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:500; color:var(--accent); background:var(--accent-lt); padding:4px 12px; border-radius:20px; }
 .role-tag   { font-size:10px; padding:1px 7px; border-radius:20px; color:#fff; font-weight:500; margin-left:4px; }
 
+
+.disclaimer {
+  background: #2c2820;
+  color: rgba(255,255,255,0.6);
+  font-size: 11px;
+  line-height: 1.8;
+  padding: 14px 20px;
+  text-align: center;
+  letter-spacing: 0.03em;
+  width: 100%;
+}
 </style>
 
 <script>
@@ -514,6 +530,7 @@ document.addEventListener('keydown', e => {
       <div class="list-meta" id="list-meta"></div>
       <div class="list-scroll" id="list"></div>
       <div class="footer">設計｜785639 蔡江涵</div>
+<div class="disclaimer">本系統僅供內部學術研究與個案討論。任何將本系統內容公開展示、截圖傳送予不特定第三人之行為，除須承擔法律連帶賠償責任外，將立即永久撤銷其使用權限。</div>
     </div>
 
     <!-- RIGHT -->
@@ -800,7 +817,11 @@ function afterLogin(user) {
 async function loadCourses() {
   try {
     const data = await api('getAll');
-    courses = (data.records || []).sort((a,b) => (b.date||'').localeCompare(a.date||''));
+    courses = (data.records || []).sort((a,b) => {
+    const ta = a.updatedAt || a.date || '';
+    const tb = b.updatedAt || b.date || '';
+    return tb.localeCompare(ta);
+  });
     // pre-assign colors in sorted tag order so colors stay stable
     allTags().forEach(t => tagColor(t));
     renderTabs();
@@ -971,6 +992,8 @@ function renderDetail(c) {
       <div class="dv-label">連結</div>
       <a class="dv-link" href="${esc(c.url)}" target="_blank" rel="noopener">開啟連結 ↗</a>
     </div>` : ''}
+
+    <div style="background:#2c2820;color:rgba(255,255,255,0.65);font-size:10.5px;line-height:1.8;padding:10px 14px;border-radius:8px;margin-bottom:16px;letter-spacing:0.03em">本系統僅供內部學術研究與個案討論。任何將本系統內容公開展示、截圖傳送予不特定第三人之行為，除須承擔法律連帶賠償責任外，將立即永久撤銷其使用權限。</div>
 
     ${c.summary ? `<div class="dv-section">
       <div class="dv-label">內容簡介</div>
@@ -1296,6 +1319,5 @@ async function openMembers() {
   startApp();
 })();
 </script>
-<div style="background:#2c2820;color:rgba(255,255,255,0.55);font-size:11px;line-height:1.8;padding:14px 20px;text-align:center;letter-spacing:0.03em;margin-top:0">本系統僅供內部學術研究與個案討論。任何將本系統內容公開展示、截圖傳送予不特定第三人之行為，除須承擔法律連帶賠償責任外，將立即永久撤銷其使用權限。</div>
 </body>
 </html>
