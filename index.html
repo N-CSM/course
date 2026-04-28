@@ -326,7 +326,7 @@ hr.divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; 
 
   .topbar-brand em { display: none; }
 
-  #app {
+  #app.on {
     height: auto;
     min-height: 100dvh;
     overflow: visible;
@@ -466,7 +466,7 @@ document.addEventListener('keydown', e => {
 <!-- ══ APP ══ -->
 
 <!-- LOGIN SCREEN -->
-<div id="login-screen">
+<div id="login-screen" style="display:none">
   <div class="login-card">
     <div class="login-logo">真善美成功團隊</div>
     <div class="login-sub">課程資料庫<br>請登入以繼續使用</div>
