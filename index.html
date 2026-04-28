@@ -582,7 +582,7 @@ document.addEventListener('keydown', e => {
 
 
 <!-- MODAL: MEMBERS -->
-<div class="modal-overlay" id="members-modal">
+<div class="overlay" id="members-modal">
   <div class="modal" style="max-width:600px">
     <div class="modal-head">
       <div class="modal-title">👥 成員管理</div>
@@ -1249,6 +1249,7 @@ $('btn-logout').addEventListener('click', () => {
 ════════════════════════════════════════════════ */
 $('btn-members').addEventListener('click', openMembers);
 $('members-close').addEventListener('click', () => $('members-modal').classList.remove('on'));
+$('members-modal').addEventListener('click', e => { if (e.target === $('members-modal')) $('members-modal').classList.remove('on'); });
 
 async function openMembers() {
   $('members-modal').classList.add('on');
